@@ -106,7 +106,7 @@ export const Account = () => {
 					</div>
 
 					{/* Posts Section */}
-					{user.posts.length > 0 ? (
+					{user?.posts?.[0]  ? (
 						<div className="w-full max-w-5xl">
 							<h2 className="text-xl font-bold text-purple-400 mb-6 animate-fade-in">
 								Posts

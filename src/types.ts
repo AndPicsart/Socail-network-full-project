@@ -60,3 +60,6 @@ export interface ISearch {
 export interface UserListProps {
 	user: IUser
 }
+export interface IComment {
+	text:string
+}

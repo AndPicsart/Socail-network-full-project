@@ -1,17 +1,22 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { Axios } from "../../lib/api"
-import type { IPosts, IUser } from "../../types"
+import type { IComment, IPosts, IUser } from "../../types"
 import { Image } from "../../lib/helpers/image"
+import { useForm, type SubmitHandler } from "react-hook-form"
 export const PostCard = () => {
 	const {id,userid} = useParams()
 	const [post,setPost] = useState<IPosts | undefined>()
 	const [user,setUser] = useState<IUser>()
+	const {register,handleSubmit,formState:{errors}} = useForm()
+	const [text,setText] = useState<string>("")
+	const [comment,setComment] = useState([])
 	useEffect(() => {
 		Axios
 		.get("/posts/" + id)
 		.then(response => {
 			setPost(response.data.payload)
+			console.log(response.data.payload)
 		})
 		Axios
 		.get("/account/" + userid)
@@ -19,6 +24,20 @@ export const PostCard = () => {
 			setUser(response.data.payload)
 		})
 	},[])
+	const handleLike = () => {
+		Axios
+		.post("/posts/react/" + id)
+		.then(response => {
+			console.log(response.data)
+		})
+	}
+	const handleCommentAdd:SubmitHandler<IComment> = (data) => {
+		Axios
+		.post("/posts/comment/" + id,data)
+		.then(response => {
+			console.log(response.data.payload)
+		})
+	}
 	return <>
 		<div className="max-w-xl mx-auto mt-10 bg-gray-800 bg-opacity-90 backdrop-blur-md rounded-xl shadow-2xl border border-gray-700 transition-transform duration-300 hover:scale-[1.01] hover:shadow-purple-700/50">
 			{/* User Info */}
@@ -55,10 +74,12 @@ export const PostCard = () => {
 
 				<div className="flex items-center gap-4 mt-2">
 					<button
+					
+					onClick={handleLike}
 						className="text-pink-500 hover:text-pink-400 transition-all duration-300 transform hover:scale-300 hover:drop-shadow-lg"
 						title="Like"
 					>
-						❤️
+						❤️ {post?.likes?.length}
 					</button>
 					<button
 						className="text-gray-400 hover:text-white transition-all duration-300 transform hover:scale-300 hover:drop-shadow-lg"
@@ -74,7 +95,14 @@ export const PostCard = () => {
 		</div>
 		{/*This is a comment div */}
 		<div className="max-w-xl mx-auto mt-6 p-5 bg-gray-700 bg-opacity-80 rounded-xl border border-gray-600 shadow-inner text-gray-300 font-medium text-sm">
-			This is a div for comment
+			<div>
+				<form onSubmit={(handleSubmit(handleCommentAdd))}>
+
+					<label htmlFor="">Comment</label>
+					<input type="text" {...register("text", {required:"Please input comment and add"})}/>
+					<button>Add Comment</button>
+				</form>
+			</div>
 		</div>
 	</>
 }
