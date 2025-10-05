@@ -62,4 +62,7 @@ export interface UserListProps {
 }
 export interface IComment {
 	text:string
+	postId:string
+	content:string
+	user:IUser
 }

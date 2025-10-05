@@ -10,7 +10,7 @@ export const PostCard = () => {
 	const [user,setUser] = useState<IUser>()
 	const {register,handleSubmit,formState:{errors}} = useForm()
 	const [text,setText] = useState<string>("")
-	const [comment,setComment] = useState([])
+	const [comment,setComment] = useState<IComment[]>([])
 	useEffect(() => {
 		Axios
 		.get("/posts/" + id)
@@ -33,9 +33,10 @@ export const PostCard = () => {
 	}
 	const handleCommentAdd:SubmitHandler<IComment> = (data) => {
 		Axios
-		.post("/posts/comment/" + id,data)
+		.post("/posts/comment/" + id,{text: data})
 		.then(response => {
 			console.log(response.data.payload)
+			setComment([...comment,response.data.payload])
 		})
 	}
 	return <>
@@ -96,12 +97,21 @@ export const PostCard = () => {
 		{/*This is a comment div */}
 		<div className="max-w-xl mx-auto mt-6 p-5 bg-gray-700 bg-opacity-80 rounded-xl border border-gray-600 shadow-inner text-gray-300 font-medium text-sm">
 			<div>
-				<form onSubmit={(handleSubmit(handleCommentAdd))}>
+				<form onSubmit={(handleSubmit((data) => handleCommentAdd(data.text)))}>
 
 					<label htmlFor="">Comment</label>
 					<input type="text" {...register("text", {required:"Please input comment and add"})}/>
 					<button>Add Comment</button>
 				</form>
+				{
+					comment.map(comm => <div key={comm.postId}>
+						<Image
+							src={comm.user.picture}
+						/>
+						<p>{comm.user.name} {comm.user.surname}</p>
+						<p>{comm.content}</p>
+					</div> )
+				}
 			</div>
 		</div>
 	</>
