@@ -9,7 +9,6 @@ export const PostCard = () => {
 	const [post,setPost] = useState<IPosts | undefined>()
 	const [user,setUser] = useState<IUser>()
 	const {register,handleSubmit,formState:{errors}} = useForm()
-	const [text,setText] = useState<string>("")
 	const [comment,setComment] = useState<IComment[]>([])
 	useEffect(() => {
 		Axios
@@ -95,24 +94,59 @@ export const PostCard = () => {
 			
 		</div>
 		{/*This is a comment div */}
-		<div className="max-w-xl mx-auto mt-6 p-5 bg-gray-700 bg-opacity-80 rounded-xl border border-gray-600 shadow-inner text-gray-300 font-medium text-sm">
+		<div className="w-full max-w-xl mx-auto mt-6 p-5 bg-gray-800 bg-opacity-90 backdrop-blur-md rounded-xl shadow-2xl border border-gray-700 transition-transform transform hover:scale-[1.01] duration-300">
+			{/* Comment Form */}
 			<div>
-				<form onSubmit={(handleSubmit((data) => handleCommentAdd(data.text)))}>
+				<form onSubmit={handleSubmit((data) => handleCommentAdd(data.text))} className="space-y-4">
+					{/* Comment Label */}
+					<label htmlFor="commentInput" className="text-sm text-gray-300 font-medium mb-1">
+						Comment
+					</label>
 
-					<label htmlFor="">Comment</label>
-					<input type="text" {...register("text", {required:"Please input comment and add"})}/>
-					<button>Add Comment</button>
+					{/* Comment Input */}
+					<input
+						id="commentInput"
+						type="text"
+						{...register("text", { required: "Please input comment and add" })}
+						placeholder="Add a comment..."
+						className="w-full rounded-lg bg-gray-900 border border-gray-700 text-gray-100 px-4 py-2 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300"
+					/>
+
+					{/* Submit Button */}
+					<button
+						type="submit"
+						className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-300 shadow-md hover:shadow-purple-700/30"
+					>
+						Add Comment
+					</button>
 				</form>
-				{
-					comment.map(comm => <div key={comm.postId}>
-						<Image
-							src={comm.user.picture}
-						/>
-						<p>{comm.user.name} {comm.user.surname}</p>
-						<p>{comm.content}</p>
-					</div> )
-				}
+
+				{/* Comment List */}
+				<div className="mt-6 space-y-4 overflow-y-auto max-h-[300px] scrollbar-thin scrollbar-thumb-purple-500 scrollbar-track-gray-600">
+					{
+						comment.map(comm => (
+							<div key={comm.postId} className="flex gap-3 items-start bg-gray-700 p-4 rounded-xl hover:bg-gray-600 transition-all duration-300 transform hover:scale-105 shadow-inner">
+								{/* User Avatar */}
+								<div className="w-10 h-10 rounded-full overflow-hidden bg-gray-600 shadow-inner">
+									<Image
+										src={comm.user.picture}
+										width={40}
+										height={40}
+										className="object-cover w-full h-full"
+									/>
+								</div>
+
+								{/* Comment Text */}
+								<div className="flex flex-col">
+									<p className="font-semibold text-white text-sm">{comm.user.name} {comm.user.surname}</p>
+									<p className="text-gray-400 text-xs mt-1">{comm.content}</p>
+								</div>
+							</div>
+						))
+					}
+				</div>
 			</div>
 		</div>
+
 	</>
 }
