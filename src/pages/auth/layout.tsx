@@ -30,6 +30,7 @@ export const Layout = () => {
 						<li>
 							<NavLink
 								to=""
+								end
 								className={({ isActive }) =>
 									isActive
 										? "text-purple-400 border-b-2 border-purple-400 pb-1"

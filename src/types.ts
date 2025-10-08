@@ -51,7 +51,7 @@ export interface IPosts{
 	picture:string
 	userId:number
 	likes?:any[]
-	comments:object
+	comments:IComment[]
 }
 export interface ISearch {
 	text:string
@@ -65,4 +65,5 @@ export interface IComment {
 	postId:string
 	content:string
 	user:IUser
+	id:number
 }
